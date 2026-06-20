@@ -34,6 +34,7 @@ jobs:
     - name: Configure
       run: |
         cmake -S grpc -B build -G Ninja ^
+          -DCMAKE_CXX_STANDARD=17 ^
           -DCMAKE_BUILD_TYPE=Release ^
           -DBUILD_SHARED_LIBS=OFF ^
           -DgRPC_BUILD_TESTS=OFF ^
@@ -41,10 +42,18 @@ jobs:
           -DgRPC_BUILD_CODEGEN=ON ^
           -DgRPC_INSTALL=ON ^
           -DCMAKE_INSTALL_PREFIX=%cd%/install ^
+          -DgRPC_BUILD_CSHARP_EXT=OFF ^
+          -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF ^
+          -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF ^
+          -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF ^
+          -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF ^
+          -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF ^
+          -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF ^
           -DgRPC_SSL_PROVIDER=none ^
           -DgRPC_ZLIB_PROVIDER=none ^
           -DgRPC_CARES_PROVIDER=none ^
           -DgRPC_ABSL_PROVIDER=module ^
+          -DgRPC_RE2_PROVIDER=none ^
           -DgRPC_PROTOBUF_PROVIDER=module
 
     # 6. 编译
