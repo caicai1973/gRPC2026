@@ -1,0 +1,79 @@
+name: Build gRPC Windows (Minimal)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    # 1. 拉代码（含submodule）
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    # 2. MSVC环境
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    # 3. 下载 Ninja & CMake（一般系统自带）
+    - name: Verify tools
+      run: |
+        cmake --version
+        ninja --version
+        cl
+
+    # 4. 获取 gRPC 源码
+    - name: Clone gRPC
+      run: |
+        git clone --depth 1 --recurse-submodules https://github.com/grpc/grpc.git grpc
+
+    # 5. 配置 CMake
+    - name: Configure
+      run: |
+        cmake -S grpc -B build -G Ninja ^
+          -DCMAKE_CXX_STANDARD=17 ^
+          -DCMAKE_BUILD_TYPE=Release ^
+          -DBUILD_SHARED_LIBS=OFF ^
+          -DgRPC_BUILD_TESTS=OFF ^
+          -DgRPC_BUILD_GRPCPP=ON ^
+          -DgRPC_BUILD_CODEGEN=ON ^
+          -DgRPC_INSTALL=ON ^
+          -DCMAKE_INSTALL_PREFIX=%cd%/install ^
+          -DgRPC_BUILD_CSHARP_EXT=OFF ^
+          -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF ^
+          -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF ^
+          -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF ^
+          -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF ^
+          -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF ^
+          -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF ^
+          -DgRPC_SSL_PROVIDER=none ^
+          -DgRPC_ZLIB_PROVIDER=none ^
+          -DgRPC_CARES_PROVIDER=none ^
+          -DgRPC_ABSL_PROVIDER=module ^
+          -DgRPC_RE2_PROVIDER=none ^
+          -DgRPC_PROTOBUF_PROVIDER=module
+
+    # 6. 编译
+    - name: Build
+      run: |
+        cmake --build build --parallel
+
+    # 7. 安装（生成 SDK 结构）
+    - name: Install
+      run: |
+        cmake --install build
+
+    # 8. 打包
+    - name: Package
+      run: |
+        7z a grpc-windows-sdk.zip install
+
+    # 9. 上传产物
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: grpc-windows-sdk
+        path: grpc-windows-sdk.zip
