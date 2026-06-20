@@ -34,7 +34,6 @@ jobs:
     - name: Configure
       run: |
         cmake -S grpc -B build -G Ninja ^
-          -DCMAKE_CXX_STANDARD=17 ^
           -DCMAKE_BUILD_TYPE=Release ^
           -DBUILD_SHARED_LIBS=OFF ^
           -DgRPC_BUILD_TESTS=OFF ^
