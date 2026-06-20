@@ -58,7 +58,7 @@ jobs:
     # 7. 安装（生成 SDK 结构）
     - name: Install
       run: |
-        cmake --install build
+        cmake --install build --config Release --prefix "$pwd/install"
 
     # 8. 打包
     - name: Package
