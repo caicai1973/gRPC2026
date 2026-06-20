@@ -53,7 +53,7 @@ jobs:
           -DgRPC_ZLIB_PROVIDER=none `
           -DgRPC_CARES_PROVIDER=none `
           -DgRPC_ABSL_PROVIDER=module `
-          -DgRPC_RE2_PROVIDER=none `
+          -DgRPC_RE2_PROVIDER=package `
           -DgRPC_PROTOBUF_PROVIDER=module
 
     # 6. 编译
